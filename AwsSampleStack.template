@@ -1,0 +1,243 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Spring boot on AWS with simple SQS queue",
+    "Resources": {
+      "CandyOrder": {
+        "Type": "AWS::SQS::Queue",
+        "Properties": {
+        }
+      },
+        "SampleStackVpc" : {
+            "Type" : "AWS::EC2::VPC",
+            "Properties" : {
+                "CidrBlock" : "10.0.0.0/16",
+                "EnableDnsSupport" : true,
+                "EnableDnsHostnames" : true
+
+            }
+        },
+        "SubnetA" : {
+            "Type" : "AWS::EC2::Subnet",
+            "Properties" : {
+                "AvailabilityZone" : "eu-west-1a",
+                "VpcId" : { "Ref" : "SampleStackVpc" },
+                "CidrBlock" : "10.0.0.0/24"
+            }
+        },
+        "SubnetB" : {
+            "Type" : "AWS::EC2::Subnet",
+            "Properties" : {
+                "AvailabilityZone" : "eu-west-1b",
+                "VpcId" : { "Ref" : "SampleStackVpc" },
+                "CidrBlock" : "10.0.1.0/24"
+            }
+        },
+        "InternetGateway" : {
+            "Type" : "AWS::EC2::InternetGateway"
+        },
+        "AttachGateway" : {
+            "Type" : "AWS::EC2::VPCGatewayAttachment",
+            "Properties" : {
+                "VpcId" : { "Ref" : "SampleStackVpc" },
+                "InternetGatewayId" : { "Ref" : "InternetGateway" }
+            }
+        },
+        "RouteTable" : {
+            "Type" : "AWS::EC2::RouteTable",
+            "Properties" : {
+                "VpcId" : {"Ref" : "SampleStackVpc"}
+            }
+        },
+        "Subnet1RouteTableAssociation" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+                "SubnetId" : { "Ref" : "SubnetA" },
+                "RouteTableId" : { "Ref" : "RouteTable" }
+            }
+        },
+        "Subnet2RouteTableAssociation" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+                "SubnetId" : { "Ref" : "SubnetB" },
+                "RouteTableId" : { "Ref" : "RouteTable" }
+            }
+        },
+        "RouteOutbound" : {
+            "Type" : "AWS::EC2::Route",
+            "DependsOn" : "AttachGateway",
+            "Properties" : {
+                "RouteTableId" : { "Ref" : "RouteTable" },
+                "DestinationCidrBlock" : "0.0.0.0/0",
+                "GatewayId" : { "Ref" : "InternetGateway" }
+            }
+        },
+        "SampleStackSubnetGroup" : {
+            "Type" : "AWS::RDS::DBSubnetGroup",
+            "Properties" : {
+                "DBSubnetGroupDescription" : "description",
+                "SubnetIds" : [ { "Ref" : "SubnetA" },{ "Ref" : "SubnetB" }  ]
+            }
+        },
+        "ApplicationRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [ {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [ "ec2.amazonaws.com" ]
+                        },
+                        "Action": [ "sts:AssumeRole" ]
+                    } ]
+                },
+                "Path": "/",
+                "Policies": [ {
+                    "PolicyName": "application",
+                    "PolicyDocument": {
+                        "Version" : "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "rds:DescribeDBInstances",
+                                    "rds:ListTagsForResource"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "elasticache:DescribeCacheClusters"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "sns:ConfirmSubscription",
+                                    "sns:CreateTopic",
+                                    "sns:GetEndpointAttributes",
+                                    "sns:GetSubscriptionAttributes",
+                                    "sns:GetTopicAttributes",
+                                    "sns:ListSubscriptions",
+                                    "sns:ListSubscriptionsByTopic",
+                                    "sns:ListTopics",
+                                    "sns:Subscribe",
+                                    "sns:Unsubscribe",
+                                    "sns:Publish"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "sqs:CreateQueue",
+                                    "sqs:DeleteMessage",
+                                    "sqs:GetQueueAttributes",
+                                    "sqs:GetQueueUrl",
+                                    "sqs:ListQueues",
+                                    "sqs:ReceiveMessage",
+                                    "sqs:SendMessage"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "ses:SendEmail",
+                                    "ses:SendRawEmail"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "cloudformation:ListStackResources",
+                                    "cloudformation:DescribeStackResources"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:*"
+                                ],
+                                "Resource": [
+                                    "arn:aws:s3:::cosee-techtalk-applications/*"
+                                ]
+                            },
+                            {
+                                "Action": [
+                                    "s3:*"
+                                ],
+                                "Resource": [
+                                    "arn:aws:s3:::cosee-techtalk-applications"
+                                ],
+                                "Effect": "Allow"
+                            }
+                        ]
+                    }
+                } ]
+            }
+        },
+        "ApplicationInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [ {
+                    "Ref": "ApplicationRole"
+                } ]
+            }
+        },
+        "WebSecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "VpcId" : { "Ref" : "SampleStackVpc" },
+                "GroupDescription" : "Web Security Group",
+                "SecurityGroupIngress" : [
+                    {"IpProtocol" : "tcp", "FromPort" : "8080", "ToPort" : "8080", "CidrIp" : "0.0.0.0/0"}
+                ]
+            }
+        },
+        "SpringBootServer": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "AvailabilityZone": { "Fn::GetAtt" : [ "SubnetA", "AvailabilityZone" ] } ,
+                "IamInstanceProfile": {
+                    "Ref": "ApplicationInstanceProfile"
+                },
+                "ImageId": "ami-e4515e0e",
+                "InstanceType": "t2.micro",
+                "KeyName": "test-key",
+                "NetworkInterfaces" : [ {
+                   "AssociatePublicIpAddress" : true,
+                   "DeviceIndex" : "0",
+                   "GroupSet" : [{"Ref": "WebSecurityGroup" }],
+                   "SubnetId" : { "Ref" : "SubnetA" }
+                }],
+                "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+                    "#!/bin/bash\n",
+                    "sudo yum install -y java-1.8.0-openjdk\n",
+                    "sudo yum remove -y java-1.7.0-openjdk\n",
+                    "cd /home/ec2-user\n",
+                    "aws s3 cp s3://cosee-techtalk-applications/spring-boot-for-aws-0.0.1-SNAPSHOT.jar application.jar\n",
+                    "nohup java -jar application.jar > application.log & \n",
+                    "\n"
+                ]]}}
+            }
+        }
+    }
+}
