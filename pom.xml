@@ -26,6 +26,9 @@
     </properties>
 
     <dependencies>
+
+        <!-- Spring Cloud -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
@@ -45,6 +48,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Automatically detects AWS region and stack resource names -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-aws-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- Automatically detects AWS region of EC2 instance -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-aws-context</artifactId>
+        </dependency>
+
+
+        <!-- Misc -->
 
         <dependency>
             <groupId>com.google.guava</groupId>

@@ -1,11 +1,13 @@
 package biz.cosee.techtalks.springcloud.springcloudforaws;
 
 import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 
 @SpringBootApplication
 public class SpringCloudForAwsApplication {
@@ -16,6 +18,13 @@ public class SpringCloudForAwsApplication {
 
     @Bean
     public QueueMessagingTemplate queueMessagingTemplate(AmazonSQSAsync amazonSQSAsync, ResourceIdResolver resourceIdResolver) {
-        return new QueueMessagingTemplate(amazonSQSAsync, resourceIdResolver);
+        ObjectMapper mapper = new ObjectMapper();
+        // configure the Jackson mapper as needed
+
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setSerializedPayloadClass(String.class);
+        converter.setObjectMapper(mapper);
+
+        return new QueueMessagingTemplate(amazonSQSAsync, resourceIdResolver, converter);
     }
 }
