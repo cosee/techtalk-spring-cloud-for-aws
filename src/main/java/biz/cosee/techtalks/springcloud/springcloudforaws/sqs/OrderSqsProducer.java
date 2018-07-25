@@ -1,5 +1,6 @@
-package biz.cosee.techtalks.springcloud.springcloudforaws;
+package biz.cosee.techtalks.springcloud.springcloudforaws.sqs;
 
+import biz.cosee.techtalks.springcloud.springcloudforaws.Order;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
@@ -22,13 +23,9 @@ public class OrderSqsProducer {
 
 
         try {
-//            queueMessagingTemplate.convertAndSend(
-//                    QUEUE_NAME,
-//                    MessageBuilder.withPayload(order).build());
-
-
             queueMessagingTemplate.convertAndSend(
                     QUEUE_NAME, order);
+
         } catch (Exception e) {
             System.out.println("Sending Message produced error: ");
             e.printStackTrace();

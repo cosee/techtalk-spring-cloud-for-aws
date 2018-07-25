@@ -1,5 +1,6 @@
-package biz.cosee.techtalks.springcloud.springcloudforaws;
+package biz.cosee.techtalks.springcloud.springcloudforaws.sqs;
 
+import biz.cosee.techtalks.springcloud.springcloudforaws.Order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;

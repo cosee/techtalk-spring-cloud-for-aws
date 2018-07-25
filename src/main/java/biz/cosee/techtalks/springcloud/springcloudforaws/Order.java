@@ -1,5 +1,6 @@
 package biz.cosee.techtalks.springcloud.springcloudforaws;
 
+import biz.cosee.techtalks.springcloud.springcloudforaws.database.order.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

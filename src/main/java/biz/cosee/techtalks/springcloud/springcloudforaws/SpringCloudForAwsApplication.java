@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.aws.core.env.ResourceIdResolver;
+import org.springframework.cloud.aws.jdbc.config.annotation.EnableRdsInstance;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 
 @SpringBootApplication
+@EnableRdsInstance(dbInstanceIdentifier = "RdsInstance", password = "${cloud.aws.rds.RdsInstance.password}")
 public class SpringCloudForAwsApplication {
 
     public static void main(String[] args) {
@@ -19,7 +21,6 @@ public class SpringCloudForAwsApplication {
     @Bean
     public QueueMessagingTemplate queueMessagingTemplate(AmazonSQSAsync amazonSQSAsync, ResourceIdResolver resourceIdResolver) {
         ObjectMapper mapper = new ObjectMapper();
-        // configure the Jackson mapper as needed
 
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setSerializedPayloadClass(String.class);
