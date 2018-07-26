@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 
 @SpringBootApplication
-@EnableRdsInstance(dbInstanceIdentifier = "RdsInstance", password = "${cloud.aws.rds.RdsInstance.password}")
+@EnableRdsInstance(
+        dbInstanceIdentifier = "RdsInstance",
+        password = "${cloud.aws.rds.RdsInstance.password}"
+)
 public class SpringCloudForAwsApplication {
 
     public static void main(String[] args) {
