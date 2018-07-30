@@ -22,3 +22,10 @@ aws cloudformation create-stack \
 --template-url \<PATH_TO_CLOUDFORMATION_TEMPLATE_IN_S3> \
 --parameters ParameterKey=RdsPassword,ParameterValue=\<RDS_PW> \
 --capabilities CAPABILITY_IAM
+
+
+
+Repositories with applications from this Talk:
+https://github.com/cosee/techtalk-spring-cloud-for-aws
+https://github.com/cosee/techtalk-spring-boot-for-aws
+https://github.com/cosee/techtalk-spring-cloud-for-aws-with-different-stack
