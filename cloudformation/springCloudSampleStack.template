@@ -359,7 +359,7 @@
                 "sudo yum install -y java-1.8.0-openjdk\n",
                 "sudo yum remove -y java-1.7.0-openjdk\n",
                 "cd /home/ec2-user\n",
-                "aws s3 cp s3://cosee-techtalk-applications/spring-cloud-for-aws-0.0.1-SNAPSHOT.jar application.jar\n",
+                "aws s3 cp s3://BUCKET_NAME/PATH/TO/JAR application.jar\n",
                 "nohup java -jar application.jar --cloud.aws.rds.RdsInstance.password=",
                 {
                   "Ref": "RdsPassword"
