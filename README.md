@@ -24,11 +24,10 @@ aws cloudformation create-stack \
 --capabilities CAPABILITY_IAM
 
 
+Presentation of the code and application (in german):
+- https://vimeo.com/282634942
 
 Repositories with applications from this Talk:
-
-https://github.com/cosee/techtalk-spring-cloud-for-aws
-
-https://github.com/cosee/techtalk-spring-boot-for-aws
-
-https://github.com/cosee/techtalk-spring-cloud-for-aws-with-different-stack
+- https://github.com/cosee/techtalk-spring-cloud-for-aws
+- https://github.com/cosee/techtalk-spring-boot-for-aws
+- https://github.com/cosee/techtalk-spring-cloud-for-aws-with-different-stack
